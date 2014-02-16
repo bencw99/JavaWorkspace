@@ -284,21 +284,14 @@ public abstract class Character extends Applet implements Locatable
     {
     	characters.remove(this);
     }
-    public boolean similar(Character character)
+    public int similar(Character character)
     {
     	int different = 0;
     	for(int i = 0; i < similarity.length; i++)
     	{
     		different += similarity[i] - character.similarity[i];
     	}
-    	if(different < 10)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
+    	return different;
     }
     public void change(Character character)
     {

@@ -61,6 +61,7 @@ public class Other extends Character
 		for(int k = 0; k < characters.size(); k ++)
 		{
 			change(characters.get(k));
+			
 //			if(similar(characters.get(k)))
 //			{
 //				if(i > 95)
