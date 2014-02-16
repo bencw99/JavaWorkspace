@@ -58,10 +58,14 @@ public class Other extends Character
 				speed = baseSpeed;
 			}
 		}
+		int current = 0;
 		for(int k = 0; k < characters.size(); k ++)
 		{
 			change(characters.get(k));
-			
+			if(similar(characters.get(k)) <= similar(characters.get(current)));
+			{
+				current = k;
+			}
 //			if(similar(characters.get(k)))
 //			{
 //				if(i > 95)
