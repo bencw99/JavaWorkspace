@@ -69,7 +69,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
             characters.add(new Player(250,250,costumeX,costumeY,-1, Color.GREEN, playerSim));
             for(int i = 1; i < charNum; i++)
             {
-            	int[]otherSim = {(int)(20*Math.random()), (int)(20*Math.random()), (int)(20*Math.random())};
+            	int[]otherSim = {(int)(100*Math.random()), (int)(100*Math.random()), (int)(100*Math.random())};
                 characters.add(new Other ((int)(screenWidth*Math.random()), (int)(screenHeight*Math.random()), (int)(4*Math.random()), (int)(2*Math.random()),1, otherSim));
             }
         }
