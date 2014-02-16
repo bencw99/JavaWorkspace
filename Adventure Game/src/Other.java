@@ -66,42 +66,39 @@ public class Other extends Character
 			{
 				current = k;
 			}
-//			if(similar(characters.get(k)))
-//			{
-//				if(i > 95)
-//				{
-//					if(j % 3 != 0 && distance(characters.get(k)) > 10)
-//					{
-//						walking = true;
-//					}
-//					else if(j % 5 != 1)
-//					{
-//						walking = false;
-//					}
-//					if(Math.abs(y - characters.get(k).y) > Math.abs(x - characters.get(k).x))
-//					{
-//						if(y - characters.get(k).y > 0)
-//						{
-//							direction = 3;
-//						}
-//						else
-//						{
-//							direction = 0;
-//						}
-//					}
-//					if(Math.abs(x - characters.get(k).x) > Math.abs(y - characters.get(k).y))
-//					{
-//						if(x - characters.get(k).x > 0)
-//						{
-//							direction = 1;
-//						}
-//						else
-//						{
-//							direction = 2;
-//						}
-//					}
-//				}
-//			}
+		}
+		if(i > 95)
+		{
+			if(j % 3 != 0 && distance(characters.get(current)) > 100)
+			{
+				walking = true;
+			}
+			else if(j % 5 != 1)
+			{
+				walking = false;
+			}
+			if(Math.abs(y - characters.get(current).y) > Math.abs(x - characters.get(current).x))
+			{
+				if(y - characters.get(current).y > 0)
+				{
+					direction = 3;
+				}
+				else
+				{
+					direction = 0;
+				}
+			}
+			if(Math.abs(x - characters.get(current).x) > Math.abs(y - characters.get(current).y))
+			{
+				if(x - characters.get(current).x > 0)
+				{
+					direction = 1;
+				}
+				else
+				{
+					direction = 2;
+				}
+			}
 		}
 	}
 	public void drawStats(Graphics screen)
