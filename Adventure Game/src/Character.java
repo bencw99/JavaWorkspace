@@ -296,7 +296,7 @@ public abstract class Character extends Applet implements Locatable
     public void change(Character character)
     {
     	double d = distance(character);
-    	if(Math.random() < 0.1)
+    	if(Math.random() < 0.05)
     	{
     		int j = (int)(Math.random()*similarity.length);
     		int i = character.similarity[j] - similarity[j];

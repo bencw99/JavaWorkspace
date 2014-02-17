@@ -186,7 +186,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
         int code = e.getKeyCode();
         if(code == KeyEvent.VK_1)
         {
-        	updateTime = 5;
+        	updateTime = 1;
         }
         if(code == KeyEvent.VK_2)
         {
