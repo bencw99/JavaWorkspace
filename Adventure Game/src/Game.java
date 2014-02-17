@@ -18,6 +18,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
     private static int costumeX = 2;
     private static int costumeY = 1;
     private static int charNum = 50;
+    private static int updateTime = 30;
     private static enum page {HOME, SETTINGS, CHOICE, GAME, PAUSE};
     private static page current = page.CHOICE;
     static int screenWidth = 1000;
@@ -83,7 +84,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
             {
                 try                              
                 {
-                    Thread.sleep(30);                       
+                    Thread.sleep(updateTime);                       
                 }
                 catch (InterruptedException e)
                 {
@@ -98,7 +99,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
             }
             try                              
             {
-                Thread.sleep(30);                       
+                Thread.sleep(updateTime);                       
             }
             catch (InterruptedException e)
             {
@@ -183,6 +184,14 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
     public void keyPressed(KeyEvent e)
     {
         int code = e.getKeyCode();
+        if(code == KeyEvent.VK_1)
+        {
+        	updateTime = 5;
+        }
+        if(code == KeyEvent.VK_2)
+        {
+        	updateTime = 30;
+        }
         if(code == KeyEvent.VK_Q)
         {
             System.exit(0);
