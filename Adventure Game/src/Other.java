@@ -55,7 +55,7 @@ public class Other extends Character
 			{
 				current = k;
 			}
-		}
+		}//
 		if(i > 95)
 		{
 			if(l == 0)
