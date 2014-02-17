@@ -12,41 +12,7 @@ public class Other extends Character
 	{
 		int i = (int)(100*Math.random());
 		int j = (int)(100*Math.random());
-		int l = (int)(3*Math.random());
-		for(int f = 0; f < spells.size(); f++)
-		{
-			if(distance(spells.get(f)) < 50)
-			{
-				walking = true;
-				speed = 60*(baseSpeed)/(distance(spells.get(f)) + 10);
-				if(spells.get(f).direction == 0 || spells.get(f).direction == 3)
-				{
-					if(x - spells.get(f).x < 0)
-					{
-						direction = 1;
-					}
-					else
-					{
-						direction = 2;
-					}
-				}
-				if(spells.get(f).direction == 1 || spells.get(f).direction == 2)
-				{
-					if(y - spells.get(f).y < 0)
-					{
-						direction = 3;
-					}
-					else
-					{
-						direction = 0;
-					}
-				}
-			}
-			else
-			{
-				speed = baseSpeed;
-			}
-		}
+		int l = (int)(2*Math.random());
 		int current = 0;
 		for(int k = 0; k < characters.size(); k ++)
 		{
@@ -64,7 +30,7 @@ public class Other extends Character
 				{
 					walking = true;
 				}
-				else if(j % 4 != 1)
+				else
 				{
 					walking = false;
 				}
@@ -102,6 +68,40 @@ public class Other extends Character
 				{
 					walking = false;
 				}
+			}
+		}
+		for(int f = 0; f < spells.size(); f++)
+		{
+			if(distance(spells.get(f)) < 50)
+			{
+				walking = true;
+				speed = 60*(baseSpeed)/(distance(spells.get(f)) + 10);
+				if(spells.get(f).direction == 0 || spells.get(f).direction == 3)
+				{
+					if(x - spells.get(f).x < 0)
+					{
+						direction = 1;
+					}
+					else
+					{
+						direction = 2;
+					}
+				}
+				if(spells.get(f).direction == 1 || spells.get(f).direction == 2)
+				{
+					if(y - spells.get(f).y < 0)
+					{
+						direction = 3;
+					}
+					else
+					{
+						direction = 0;
+					}
+				}
+			}
+			else
+			{
+				speed = baseSpeed;
 			}
 		}
 	}
