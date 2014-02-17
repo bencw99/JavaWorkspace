@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-// This is a test
 public class Game extends JPanel implements KeyListener, MouseListener, MouseMotionListener
 {
     private static ArrayList<Character> characters = new ArrayList<Character>();
