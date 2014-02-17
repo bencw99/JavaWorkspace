@@ -16,7 +16,7 @@ public class Summoned extends Character
 		int j = (int)(2*Math.random());
 		if(i > 95)
 		{
-			if(j % 3 != 0)
+			if(j % 2 != 0)
 			{
 				walking = true;
 			}
