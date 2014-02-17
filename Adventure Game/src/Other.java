@@ -24,41 +24,41 @@ public class Other extends Character
 		}
 		if(i > 95)
 		{
-			if(l == 0)
-			{
-				if(j % 3 != 0 && distance(characters.get(current)) > 70)
-				{
-					walking = true;
-				}
-				else
-				{
-					walking = false;
-				}
-				if(Math.abs(y - characters.get(current).y) > Math.abs(x - characters.get(current).x))
-				{
-					if(y - characters.get(current).y > 0)
-					{
-						direction = 3;
-					}
-					else
-					{
-						direction = 0;
-					}
-				}
-				if(Math.abs(x - characters.get(current).x) > Math.abs(y - characters.get(current).y))
-				{
-					if(x - characters.get(current).x > 0)
-					{
-						direction = 1;
-					}
-					else
-					{
-						direction = 2;
-					}
-				}
-			}
-			else
-			{
+//			if(l == 0)
+//			{
+//				if(j % 3 != 0 && distance(characters.get(current)) > 70)
+//				{
+//					walking = true;
+//				}
+//				else
+//				{
+//					walking = false;
+//				}
+//				if(Math.abs(y - characters.get(current).y) > Math.abs(x - characters.get(current).x))
+//				{
+//					if(y - characters.get(current).y > 0)
+//					{
+//						direction = 3;
+//					}
+//					else
+//					{
+//						direction = 0;
+//					}
+//				}
+//				if(Math.abs(x - characters.get(current).x) > Math.abs(y - characters.get(current).y))
+//				{
+//					if(x - characters.get(current).x > 0)
+//					{
+//						direction = 1;
+//					}
+//					else
+//					{
+//						direction = 2;
+//					}
+//				}
+//			}
+//			else
+//			{
 				direction = (i % 4);
 				if(j % 2 == 0)
 				{
@@ -68,7 +68,7 @@ public class Other extends Character
 				{
 					walking = false;
 				}
-			}
+//			}
 		}
 		for(int f = 0; f < spells.size(); f++)
 		{
