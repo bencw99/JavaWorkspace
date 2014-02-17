@@ -302,11 +302,15 @@ public abstract class Character extends Applet implements Locatable
     		int i = character.similarity[j] - similarity[j];
     		if(d > 10)
     		{
-	    		similarity[j] += i/d;
+	    		similarity[j] += (int)(i/d);
     		}
     		else
     		{
-    			similarity[j] += i/10;
+    			similarity[j] += (int)(i/10);
+    		}
+    		if(Math.random() < 0.01)
+    		{
+    			similarity[j] += (int)(100*Math.random()) - 50;
     		}
     	}
     }
