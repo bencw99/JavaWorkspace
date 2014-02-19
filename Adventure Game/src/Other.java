@@ -12,53 +12,56 @@ public class Other extends Character
 	{
 		int i = (int)(100*Math.random());
 		int j = (int)(100*Math.random());
-		int l = (int)(4*Math.random());
+		int l = (int)(2*Math.random());
 		int current = 0;
 		int xDirect = 0;
 		int yDirect = 0;
-		for(int k = 0; k < characters.size(); k ++)
-		{
-			change(characters.get(k));
-			int similarity = similar(characters.get(k));
-			xDirect += (int)(((x - characters.get(k).x)/similarity));
-			yDirect += (int)(((y - characters.get(k).y)/similarity));
-//			if(similar(characters.get(k)) <= similar(characters.get(current)));
-//			{
-//				current = k;
-//			}
-		}
 		if(i > 95)
 		{
-			if(j % 3 != 0 && distance(characters.get(current)) > 70)
+			for(int k = 0; k < characters.size(); k ++)
 			{
-				walking = true;
+				change(characters.get(k));
+				int similarity = similar(characters.get(k));
+				xDirect += (int)(((x - characters.get(k).x)/similarity));
+				yDirect += (int)(((y - characters.get(k).y)/similarity));
+				if(similar(characters.get(k)) <= similar(characters.get(current)));
+				{
+					current = k;
+				}
 			}
-		 	else
-		 	{
-		 		walking = false;
-		 	}
-		 	if(Math.abs(yDirect) > Math.abs(xDirect))
-		 	{
-		 		if(yDirect > 0)
-		 		{
-		 			direction = 3;
-		 		}
-		 		else
-		 		{
-		 			direction = 0;
-		 		}
-		 	}
-		 	if(Math.abs(xDirect) > Math.abs(yDirect))
-		 	{
-		 		if(xDirect > 0)
-		 		{
-		 			direction = 1;
-		 		}
-		 		else
-		 		{
-		 			direction = 2;
-		 		}
-		 	}
+			if(l == 0)
+			{
+				if(j % 3 != 0 && distance(characters.get(current)) > 70)
+				{
+					walking = true;
+				}
+			 	else
+			 	{
+			 		walking = false;
+			 	}
+			 	if(Math.abs(yDirect) > Math.abs(xDirect))
+			 	{
+			 		if(yDirect > 0)
+			 		{
+			 			direction = 3;
+			 		}
+			 		else
+			 		{
+			 			direction = 0;
+			 		}
+			 	}
+			 	if(Math.abs(xDirect) > Math.abs(yDirect))
+			 	{
+			 		if(xDirect > 0)
+			 		{
+			 			direction = 1;
+			 		}
+			 		else
+			 		{
+			 			direction = 2;
+			 		}
+			 	}
+			}
 		 	else
 		 	{
 		 		direction = (i % 4);
