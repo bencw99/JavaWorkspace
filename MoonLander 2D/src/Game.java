@@ -1,4 +1,3 @@
-import java.applet.Applet;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.Color;
@@ -10,29 +9,36 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-public class Game extends Applet implements KeyListener
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+public class Game extends JPanel implements KeyListener
 {
-	int score = 0;
-    static int level = 0;
-    int highscore;
-    boolean start = false;
-    boolean settings = false;
-    boolean pause = false;
-    Terrain terrain = new Terrain();
-    SuperLander lander = new Beginner();
-    PortalPair portals[];
-    FileOutputStream file;
-    PrintWriter printWriter;
-    BufferedReader bufferedReader;
-    public void init()
+	private static int screenWidth = 1000;
+	private static int screenHeight = 600;
+	private static int score = 0;
+    private static int level = 0;
+    private static int highscore;
+    private static boolean start = false;
+    private static boolean settings = false;
+    private static boolean pause = false;
+    private static Terrain terrain = new Terrain();
+    private static SuperLander lander = new Beginner();
+    private static PortalPair portals[];
+    private static FileOutputStream file;
+    private static PrintWriter printWriter;
+    private static BufferedReader bufferedReader;
+    private static JFrame frame = new JFrame();
+    public static void main(String[]args)
     {
-        setSize(1000, 600);
-        setBackground(Color.BLACK);
-        setVisible(true);
-        addKeyListener( this );
-    }
-    public void start()
-    {
+        frame.setSize(screenWidth,screenHeight);
+        frame.setTitle("Moon Lander");
+        frame.setLocationRelativeTo(null);
+        frame.setBackground(Color.BLACK);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Game drawer = new Game();
+        frame.add(drawer);
+        frame.setVisible(true);
+        frame.addKeyListener(drawer);
     	while(true)
     	{
 	        String string = null;
@@ -44,7 +50,7 @@ public class Game extends Applet implements KeyListener
 			} 
 	        catch (IOException e) 
 			{
-				e.printStackTrace();
+	        	highscore = 0;
 			}
 	        if(string == null)
 	        {
@@ -56,20 +62,23 @@ public class Game extends Applet implements KeyListener
 	        }
     		score = 0;
     		level = 0;
-	    	repaint();
+	    	frame.repaint();
+    		frame.setBackground(Color.WHITE);
 	    	while(start == false)
 	    	{
 	            try                               
 	            {
-	                Thread.sleep(10);                        
+	                Thread.sleep(30);                        
 	            } 
 	            catch (InterruptedException e) 
 	            {
 	                e.printStackTrace();
 	            }
+	            frame.repaint();
 	    	}
     		lander.setState(true);
-	        repaint();
+    		frame.setBackground(Color.BLACK);
+	        frame.repaint();
 	        while(lander.state)
 	        {
 	            level ++;
@@ -93,7 +102,7 @@ public class Game extends Applet implements KeyListener
 	            lander.setFuel(1000);
 	            while(lander.land(terrain))
 	            {
-	            	repaint();
+	            	frame.repaint();
 	                lander.gravity(portals);
 	                lander.teleport(portals);
 			        for(int b = 0; b < portals.length; b++)
@@ -122,14 +131,14 @@ public class Game extends Applet implements KeyListener
 			            {
 			                e.printStackTrace();
 			            }
-			            repaint();
+			            frame.repaint();
 		            }
 	            }
 	            if(lander.state)
 	            {
 	            	score += lander.fuel + 100/Math.pow(lander.xVel*lander.xVel + lander.yVel*lander.yVel, 0.5) + (level - 1)*50;
 	            }
-	            repaint();
+	            frame.repaint();
 	            try                               
 	            {
 	                Thread.sleep(3000);                        
@@ -139,7 +148,7 @@ public class Game extends Applet implements KeyListener
 	                e.printStackTrace();
 	            }
 	        }
-	        if(score > highscore)
+	        if(score >= highscore)
 	        {
 	            try 
 	            {
@@ -163,7 +172,7 @@ public class Game extends Applet implements KeyListener
 	        }
 	        settings = false;
 	        start = false;
-	        repaint();
+	        frame.repaint();
 		}
 	}
     public void paint(Graphics screen)
@@ -214,7 +223,7 @@ public class Game extends Applet implements KeyListener
     	}
     	else if(settings == false)
     	{
-    		setBackground(Color.WHITE);
+    		frame.setBackground(Color.WHITE);
 			Font font = new Font("Cambria",Font.BOLD, 80);
 			screen.setFont(font);
         	screen.drawString("Moon Lander", 270, 200);
@@ -226,7 +235,6 @@ public class Game extends Applet implements KeyListener
     	}
     	if(settings && start == false)
     	{
-    		setBackground(Color.WHITE);
 			Font font = new Font("Cambria",Font.BOLD, 40);
 			screen.setFont(font);
         	screen.drawString("Settings: ", 100, 100);
@@ -367,5 +375,9 @@ public class Game extends Applet implements KeyListener
     	{
     		return Color.black;
     	}
+    }
+    public static int getLevel()
+    {
+    	return level;
     }
 }

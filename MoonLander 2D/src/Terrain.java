@@ -27,7 +27,7 @@ public class Terrain extends Applet
     	{
     		b = (int)(heights.length*Math.random());
     	}
-    	heights[b] = 200 + Game.level*100*Math.random();
+    	heights[b] = 200 + Game.getLevel()*100*Math.random();
     }
     public void change()
     {
@@ -91,7 +91,7 @@ public class Terrain extends Applet
     public void terrain1()
     {
         setTerrain();
-        for(int i = 0; i < Game.level; i++)
+        for(int i = 0; i < Game.getLevel(); i++)
         {
         	spire();
         }
