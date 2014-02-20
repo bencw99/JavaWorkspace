@@ -13,9 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 public class Game extends JPanel implements KeyListener
 {
-	private static int screenWidth = 1000;
-	private static int screenHeight = 600;
-	private static int score = 0;
     private static int level = 0;
     private static int highscore;
     private static boolean start = false;
@@ -27,6 +24,9 @@ public class Game extends JPanel implements KeyListener
     private static FileOutputStream file;
     private static PrintWriter printWriter;
     private static BufferedReader bufferedReader;
+    private static int screenWidth = 1000;
+    private static int screenHeight = 600;
+    private static int score = 0;
     private static JFrame frame = new JFrame();
     public static void main(String[]args)
     {
