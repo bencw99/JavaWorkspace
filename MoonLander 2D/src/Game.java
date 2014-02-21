@@ -380,4 +380,8 @@ public class Game extends JPanel implements KeyListener
     {
     	return level;
     }
+    public static int getScreenWidth()
+    {
+    	return screenWidth;
+    }
 }

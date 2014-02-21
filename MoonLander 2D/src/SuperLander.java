@@ -187,6 +187,26 @@ public abstract class SuperLander extends Applet
     	}
     	return rotated;
     }
+    public void update()
+    {
+    	yPosDraw = yPos - 45;
+    	xPosDraw = xPos;
+        yVel += g;
+        xPos += xVel;
+        yPos += yVel;
+        if(fuel <= 0)
+        {
+        	fuel = 0;
+        }
+        if(xPos >= Game.getScreenWidth())
+        {
+        	xPos = 0.1;
+        }
+        if(xPos <= 0)
+        {
+        	xPos = Game.getScreenWidth() - 0.1;
+        }
+    }
 	public abstract void ThrustOn();
 	public abstract void upThrustOn();
 	public abstract void setLeftOn();
@@ -202,5 +222,4 @@ public abstract class SuperLander extends Applet
 	public abstract boolean land(Terrain terrain);
 	public abstract void setAngle(double d);
     public abstract void drawLander(Graphics screen);
-    public abstract void update();
 }

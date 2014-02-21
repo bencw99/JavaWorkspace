@@ -65,9 +65,7 @@ public class Beginner extends SuperLander
     }
     public void update()
     {
-        xPosDraw = xPos;
-        yPosDraw = yPos - 45;
-        yVel += g;
+    	super.update();
         if(upThrust == true && fuel > 0)
         {
             yVel -= 0.02;
@@ -82,20 +80,6 @@ public class Beginner extends SuperLander
         {
             xVel -= 0.01;
             fuel--;
-        }
-        xPos += xVel;
-        yPos += yVel;
-        if(xPos >= 999.9)
-        {
-        	xPos = 0.2;
-        }
-        if(xPos <= 0.1)
-        {
-        	xPos = 999.8;
-        }
-        if(fuel <= 0)
-        {
-        	fuel = 0;
         }
     }
 	public boolean land(Terrain terrain)

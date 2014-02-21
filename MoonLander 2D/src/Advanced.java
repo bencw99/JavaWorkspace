@@ -55,9 +55,7 @@ public class Advanced extends SuperLander
     }
     public void update()
     {
-    	yPosDraw = yPos - 45;
-    	xPosDraw = xPos;
-        yVel += g;
+    	super.update();
         if(Thrust == true && fuel > 0)
         {
             yVel -= 0.03*Math.cos(angle);
@@ -71,20 +69,6 @@ public class Advanced extends SuperLander
         if(left)
         {
         	angle -= 0.01;
-        }
-        xPos += xVel;
-        yPos += yVel;
-        if(xPos >= 999.9)
-        {
-        	xPos = 0.2;
-        }
-        if(xPos <= 0.1)
-        {
-        	xPos = 999.8;
-        }
-        if(fuel <= 0)
-        {
-        	fuel = 0;
         }
     }
 	public boolean land(Terrain terrain)
