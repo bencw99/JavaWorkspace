@@ -226,7 +226,7 @@ public abstract class Character extends Applet implements Locatable
     {
         for(int i = 0; i < items.length; i++)
         {
-            if(distance(items[i]) < 15)
+            if(distance(items[i]) < items[i].height/2)
             {
                 hold(items[i]);
                 break;
