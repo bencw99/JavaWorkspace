@@ -23,8 +23,9 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
     private static page current = page.CHOICE;
     static int screenWidth = 1000;
     static int screenHeight = 600;
-    public static void main(String[]args)
+    public static void main(String[]args) throws IOException
     {
+		Character.characterInit();
         for(int i = 0; i < buttonHighlight.length; i++)
         {
             buttonHighlight[i] = false;
@@ -91,7 +92,6 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
                     e.printStackTrace();
                 }
             }
-            System.out.println(characters.get(1).similarity[0] + " , " + characters.get(1).similarity[1] + " , " + characters.get(1).similarity[2]);
             for(int i = 0; i < characters.size(); i++)
             {
                 characters.get(i).walk(characters.get(0).spells, characters);

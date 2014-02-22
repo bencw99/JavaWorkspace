@@ -8,7 +8,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 public abstract class Character extends Applet implements Locatable
 {
-    final BufferedImage spritePage;
+    static BufferedImage spritePage;
     int direction = 0;
     boolean walking = false;
     boolean sprint = false;
@@ -63,13 +63,16 @@ public abstract class Character extends Applet implements Locatable
             }
         }
     }
+    public static void characterInit() throws IOException
+    {
+        spritePage = ImageIO.read(new File("characters.png"));
+    }
     public Character(double a, double b, int c, int d, int t, int[]sim) throws IOException
     {
         x = a;
         y = b;
         xID = c;
         yID = d;
-        spritePage = ImageIO.read(new File("characters.png"));
         sprites = new BufferedImage[3][4];
         hold(new Item(t,true));
         for (int i = 0; i < sprites.length; i++)
