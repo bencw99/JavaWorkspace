@@ -18,7 +18,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
     private static int costumeX = 2;
     private static int costumeY = 1;
     private static int charNum = 50;
-    private static int updateTime = 30;
+    private static int updateTime = 25;
     private static enum page {HOME, SETTINGS, CHOICE, GAME, PAUSE};
     private static page current = page.CHOICE;
     static int screenWidth = 1000;
@@ -190,7 +190,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
         }
         if(code == KeyEvent.VK_2)
         {
-        	updateTime = 30;
+        	updateTime = 25;
         }
         if(code == KeyEvent.VK_Q)
         {
