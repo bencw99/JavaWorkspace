@@ -13,12 +13,13 @@ import javax.swing.JPanel;
 public class Game extends JPanel implements KeyListener, MouseListener, MouseMotionListener
 {
     private static ArrayList<Character> characters = new ArrayList<Character>();
+    private static Player player;
     private static Item[] items = new Item[12];
     private static boolean[] buttonHighlight = new boolean[8];
     private static int costumeX = 2;
     private static int costumeY = 1;
     private static int charNum = 50;
-    private static int updateTime = 25;
+    private static int updateTime = 20;
     private static enum page {HOME, SETTINGS, CHOICE, GAME, PAUSE};
     private static page current = page.CHOICE;
     static int screenWidth = 1000;
@@ -68,7 +69,8 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
         try
         {
         	int[]playerSim = {0 , 0, 0};
-            characters.add(new Player(250,250,costumeX,costumeY,-1, Color.GREEN, playerSim));
+        	player = new Player(250,250,costumeX,costumeY,-1, Color.GREEN, playerSim);
+            characters.add(player);
             for(int i = 1; i < charNum; i++)
             {
             	int[]otherSim = {(int)(1000*Math.random()), (int)(1000*Math.random()), (int)(1000*Math.random())};
@@ -94,8 +96,8 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
             }
             for(int i = 0; i < characters.size(); i++)
             {
-                characters.get(i).walk(characters.get(0).spells, characters);
-                characters.get(i).update(characters.get(0).spells, characters);
+                characters.get(i).walk(player.spells, characters);
+                characters.get(i).update(player.spells, characters);
             }
             try                              
             {
@@ -116,15 +118,15 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
             {
                 items[i].draw(screen);
             }
-            characters.get(0).drawStats(screen );
-            Locatable[] locatables = new Locatable[characters.size() + characters.get(0).spells.size()];
+            player.drawStats(screen );
+            Locatable[] locatables = new Locatable[characters.size() + player.spells.size()];
             for(int i = 0; i < characters.size(); i++)
             {
                 locatables[i] = characters.get(i);
             }
-            for(int i = characters.size(); i < characters.size() + characters.get(0).spells.size(); i++)
+            for(int i = characters.size(); i < characters.size() + player.spells.size(); i++)
             {
-                locatables[i] = characters.get(0).spells.get(i - characters.size());
+                locatables[i] = player.spells.get(i - characters.size());
             }
             display(order(locatables), screen);
         }
@@ -200,33 +202,33 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
         {
             if(code == KeyEvent.VK_UP)
             {
-                characters.get(0).setDirection(3);
-                characters.get(0).setWalking(true);
+                player.setDirection(3);
+                player.setWalking(true);
             }
             if(code == KeyEvent.VK_LEFT)
             {
-                characters.get(0).setDirection(1);
-                characters.get(0).setWalking(true);
+                player.setDirection(1);
+                player.setWalking(true);
             }
             if(code == KeyEvent.VK_RIGHT)
             {
-                characters.get(0).setDirection(2);
-                characters.get(0).setWalking(true);
+                player.setDirection(2);
+                player.setWalking(true);
             }
             if(code == KeyEvent.VK_DOWN)
             {          
-                characters.get(0).setDirection(0);
-                characters.get(0).setWalking(true);
+                player.setDirection(0);
+                player.setWalking(true);
             }
             if(code == KeyEvent.VK_S)
             {
-                characters.get(0).sprintOn();
+                player.sprintOn();
             }
             if(code == KeyEvent.VK_SPACE)
             {
                 try
                 {
-                    characters.get(0).executeSpell(characters);
+                    player.executeSpell(characters);
                 }
                 catch (IOException i)
                 {
@@ -237,7 +239,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
             {
                 try
                 {
-                    characters.get(0).release(characters);
+                    player.release(characters);
                 }
                 catch (IOException i)
                 {
@@ -258,7 +260,7 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
         }
         if(code == KeyEvent.VK_D)
         {
-            characters.get(0).pickUp(items);
+            player.pickUp(items);
         }
     }
     public void keyReleased(KeyEvent e)
@@ -268,23 +270,23 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
         {
             if(code == KeyEvent.VK_UP)
             {
-                characters.get(0).setWalking(false);
+                player.setWalking(false);
             }
             if(code == KeyEvent.VK_LEFT)
             {
-                characters.get(0).setWalking(false);
+                player.setWalking(false);
             }
             if(code == KeyEvent.VK_RIGHT)
             {
-                characters.get(0).setWalking(false);
+                player.setWalking(false);
             }
             if(code == KeyEvent.VK_DOWN)
             {
-                characters.get(0).setWalking(false);
+                player.setWalking(false);
             }
             if(code == KeyEvent.VK_S)
             {
-                characters.get(0).sprintOff();
+                player.sprintOff();
             }
              
         }

@@ -1,4 +1,4 @@
-package appl.graphics.lunarlander;
+package LunarLander;
 
 import java.awt.Color;
 

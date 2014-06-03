@@ -3,20 +3,29 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 public class MyFileReader 
 {
+	//Instance variables fileName, input, and date
 	String fileName;
-	Scanner scanner;
+	Scanner input;
+	Date date;
+	//Constructor initializing fileName
 	public MyFileReader(String name)
 	{
 		fileName = name;
 	}
+	//Reads file and returns Date object, instance must be initialized
 	public Date read() throws FileNotFoundException
 	{
 		String dateString = "";
-		scanner = new Scanner(new File(fileName));
-		while(scanner.hasNext())
+		input = new Scanner(new File(fileName));
+		while(input.hasNext())
 		{
-			dateString += scanner.next();
+			dateString += input.next();
+			if(input.hasNext())
+			{
+				dateString += " ";
+			}
 		}
-		return new Date(dateString);
+		date = new Date(dateString);
+		return date;
 	}
 }

@@ -24,9 +24,9 @@ public class Date
 	}
 	public Date(String date)
 	{
-		month = Integer.parseInt(date.substring(0,1));
-		day = Integer.parseInt(date.substring(3,4));
-		year = Integer.parseInt(date.substring(6,9));
+		month = Integer.parseInt(date.substring(0,2));
+		day = Integer.parseInt(date.substring(3,5));
+		year = Integer.parseInt(date.substring(6,date.length()));
 	}
 	public String getDate()
 	{
