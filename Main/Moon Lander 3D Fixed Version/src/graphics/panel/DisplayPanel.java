@@ -3,6 +3,7 @@ package graphics.panel;
 import game.terrain.*;
 import graphics.polygon.*;
 import graphics.projection.*;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -19,10 +20,10 @@ public class DisplayPanel extends JPanel implements KeyListener
 	
 	public static void main(String[]args)
 	{
-        terrain = new Terrain(100, 150, new Point2D(-4700, 1500));
+        terrain = new Terrain(100, 150, new Point2D(0,0));
         terrain.init();
 		
-        view = new View(new Point3D(700, -2000, 3600), new Point3D(700, 2000, 1867), Math.PI);
+        view = new View(new Point3D(terrain.getSpaceWidth()/2, 0, 4000), new Point3D(terrain.getSpaceWidth()/2, terrain.getSpaceLength()/2, 1500), 0);
         
         frame.setSize(panelWidth,panelHeight);
         frame.setTitle("Terrain");
@@ -33,20 +34,21 @@ public class DisplayPanel extends JPanel implements KeyListener
         frame.add(panel);
         frame.addKeyListener(panel);
         frame.setVisible(true);
-
+        
         System.out.println(terrain);
+        
 //        for(double i = 0; i < 1000; i += 1)
 //        {	
 //        	try
 //			{
-//				Thread.sleep(100);
+//				Thread.sleep(10);
 //			} 
 //        	catch (InterruptedException e)
 //			{
 //				e.printStackTrace();
 //			}
-//        	terrain.smooth();
-//        	terrain.loadPolys();
+//        	
+//        	view.setView(view.getViewPoint().rotate(new Point3D()));
 //        	frame.repaint();
 //        }
 	}
@@ -66,42 +68,43 @@ public class DisplayPanel extends JPanel implements KeyListener
 	
 	public void keyPressed(KeyEvent e)
 	{
+		double startTime = System.currentTimeMillis();
 		char code = (char)e.getKeyCode();
 		
 		if(code == '1')
 		{
         	view.translateView(50, 0, 0);
-//        	view.translateViewed(50, 0, 0);
+        	view.translateViewed(50, 0, 0);
 		}
 		
 		if(code == '2')
 		{
         	view.translateView(0, 50, 0);
-//        	view.translateViewed(0, 50, 0);
+        	view.translateViewed(0, 50, 0);
 		}
 		
 		if(code == '3')
 		{
         	view.translateView(0, 0, 50);
-//        	view.translateViewed(0, 0, 50);
+        	view.translateViewed(0, 0, 50);
 		}
 		
 		if(code == '4')
 		{
         	view.translateView(-50, 0, 0);
-//        	view.translateViewed(-50, 0, 0);
+        	view.translateViewed(-50, 0, 0);
 		}
 		
 		if(code == '5')
 		{
         	view.translateView(0, -50, 0);
-//        	view.translateViewed(0, -50, 0);
+        	view.translateViewed(0, -50, 0);
 		}
 		
 		if(code == '6')
 		{
         	view.translateView(0, 0, -50);
-//        	view.translateViewed(0, 0, -50);
+        	view.translateViewed(0, 0, -50);
 		}
 		
 		if(code == '7')
@@ -109,6 +112,8 @@ public class DisplayPanel extends JPanel implements KeyListener
 			view.zoom(1.2);
 		}
 		frame.repaint();
+		double endTime = System.currentTimeMillis();
+		System.out.println(endTime - startTime);
 	}
 
 	public void keyReleased(KeyEvent e)

@@ -118,7 +118,6 @@ public class Game extends JPanel implements KeyListener, MouseListener, MouseMot
             {
                 items[i].draw(screen);
             }
-            player.drawStats(screen );
             Locatable[] locatables = new Locatable[characters.size() + player.spells.size()];
             for(int i = 0; i < characters.size(); i++)
             {

@@ -13,7 +13,7 @@ public class Other extends Character
 	{
 		int i = (int)(100*Math.random());
 		int j = (int)(100*Math.random());
-		int l = (int)(2*Math.random());
+		int l = (int)(10*Math.random());
 		int current = 0;
 		int xDirect = 0;
 		int yDirect = 0;

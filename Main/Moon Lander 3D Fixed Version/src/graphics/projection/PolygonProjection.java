@@ -55,11 +55,11 @@ public class PolygonProjection
 		
 		for(int i = 0; i < points.length; i ++)
 		{
-			double xCoord = points[i].getX();
-			double yCoord = points[i].getY();
+			double xCoord = points[i].getX() - point.getX();
+			double yCoord = points[i].getY() - point.getY();
 			double cos = Math.cos(angle);
 			double sin = Math.sin(angle);
-			rotatedPoints[i] = new Point2D(xCoord*cos - yCoord*sin, xCoord*sin + yCoord*cos);
+			rotatedPoints[i] = new Point2D(xCoord*cos - yCoord*sin + point.getX(), xCoord*sin + yCoord*cos + point.getY());
 		}
 		
 		return new PolygonProjection(rotatedPoints, priority, incline, color);
@@ -88,11 +88,40 @@ public class PolygonProjection
 		
 		graphics.fillPolygon(xPoints, yPoints, points.length);
 		
-		graphics.setColor(darken(inclinedColor, 25));
+		graphics.setColor(darken(color, 255));
 		
 		graphics.drawPolygon(xPoints, yPoints, points.length);
 		
 		graphics.setColor(currentColor);
+	}
+	
+	/**
+	 * @return a String representation of this instance
+	 */
+	public String toString()
+	{
+		String pointString = "";
+		for(Point2D point : points)
+		{
+			pointString += point.toString() + ", ";
+		}
+		return pointString;
+	}
+	
+	/** Translated this projected by the given values
+	 * 
+	 * @param xInc	the x-increment to be translated by
+	 * @param yInc	the y-increment to be translated by
+	 * @return a translated instance
+	 */
+	public PolygonProjection translate(int xInc, int yInc)
+	{
+		Point2D[] translatedPoints = new Point2D[points.length];
+		for(int i = 0; i < points.length; i ++)
+		{
+			translatedPoints[i] = new Point2D(points[i].getX() + xInc, points[i].getY() + yInc);
+		}
+		return new PolygonProjection(translatedPoints, priority, incline, color);
 	}
 	
 	/**

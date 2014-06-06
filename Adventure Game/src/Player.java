@@ -14,6 +14,7 @@ public class Player extends Character
     }
     public void draw(Graphics screen)
     {
+    	drawStats(screen);
         super.draw(screen);
     }
     public void drawStats(Graphics screen)

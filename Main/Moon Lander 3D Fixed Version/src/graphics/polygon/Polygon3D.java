@@ -169,7 +169,7 @@ public class Polygon3D
 		rotatedPoly = rotatedPoly.rotAboutZ(zTurnAngle);
 		
 		/* Translation of space back to its initial position, but rotated */
-//		rotatedPoly = rotatedPoly.translate(viewPoint.getX(), viewPoint.getY(), viewPoint.getZ());
+		rotatedPoly = rotatedPoly.translate(viewPoint.getX(), viewPoint.getY(), viewPoint.getZ());
 		
 		Point2D[] projectedPoints = new Point2D[points.length];
 		Point3D[] rotatedPoints = rotatedPoly.getPoints();
@@ -201,7 +201,9 @@ public class Polygon3D
 		
 		double incline = (maxPoint.getZ() - minPoint.getZ())/Math.sqrt(Math.pow(maxPoint.getX() - minPoint.getX(), 2) + Math.pow(maxPoint.getY() - minPoint.getY(), 2)); 
 		
-		return ((new PolygonProjection(projectedPoints, priority, incline, color)).rotate(new Point2D(viewPoint.getX(), viewPoint.getY()), view.getTurnAngle()));
+		System.out.println((new PolygonProjection(projectedPoints, priority, incline, color)).rotate(new Point2D(viewPoint.getX(), viewPoint.getY()), view.getTurnAngle()));
+		
+		return ((new PolygonProjection(projectedPoints, priority, incline, color)).rotate(new Point2D(viewPoint.getX(), viewPoint.getY()), view.getTurnAngle()).translate(0, 500));
 	}
 	
 	/**
