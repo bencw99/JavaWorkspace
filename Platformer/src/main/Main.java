@@ -30,11 +30,13 @@ public class Main extends JPanel
         frame.add(drawer);
         frame.setVisible(true);
         
-        Player player = new Player(new Position(250, 300), new Velocity(0, 0), 20, 40);
+        Player player = new Player(new Position(250, 200), new Velocity(0, 0), 20, 40);
+        Player player2 = new Player(new Position(200, 200), new Velocity(0, 0), 20, 40);
         
         world = new World();
-        world.add(new Platform(new Position(250, 250), 200, 20));
+        world.add(new Platform(new Position(250, 400), 200, 20));
         world.add(player);
+        world.add(player2);
         
         for(int i = 0; i < 10000; i ++)
         {
@@ -48,6 +50,8 @@ public class Main extends JPanel
 			}
         	System.out.println(player.getPos().getX() + " " + player.getPos().getY());
         	
+        	player.jump();
+        	player2.jump();
         	frame.repaint();
         	world.update();
         }

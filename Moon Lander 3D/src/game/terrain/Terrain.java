@@ -17,6 +17,9 @@ public class Terrain
 	/** The array of polygons used to represent the terrain between nodes */
 	private Polygon3D[][] polygons;
 	
+	/** The array of Colors used to represent the color of each polygon in the array*/
+	private Color[][] colors;
+	
 	/** The point in 2D space for the initial x and y coordinates of the terrain */
 	private final Point2D initialPoint;
 	
@@ -26,11 +29,16 @@ public class Terrain
 	/** The factor determining the amount smoothed per call of smooth */
 	public static final double SMOOTHING_FACTOR = 0.05;
 	
-	/** The base color for all terrain instances */
-	public static final Color COLOR = new Color(210, 160, 90);
+	/** The factor determining the amount color smoothed per call of colorSmooth */
+	public static final double COLOR_SMOOTHING_FACTOR = 0.05;
 	
 	/** The base color for all terrain instances */
-	public static final Color SECONDARY_COLOR = new Color(95, 220, 15);
+	public static final Color COLOR = new Color(210, 160, 90);
+//	public static final Color COLOR = new Color(28, 107, 160);
+	
+	/** The base color for all terrain instances */
+	public static final Color SECONDARY_COLOR = new Color(30, 140, 10);
+//	public static final Color SECONDARY_COLOR = new Color(28, 107, 160);
 	
 	/** Parameterized constructor, initializes height array
 	 * 
@@ -51,6 +59,7 @@ public class Terrain
 	{
 		heights = new double[length][width];
 		polygons = new Polygon3D[length - 1][width - 1];
+		colors = new Color[length][width];
 		this.initialPoint = initialPoint;
 	}
 	
@@ -68,6 +77,10 @@ public class Terrain
 //		{
 //			smooth(0, 0, 50, 150);
 //		}
+		for(int i = 0; i < 30; i ++)
+		{
+			colorSmooth();
+		}
 		loadPolys();
 	}
 	
@@ -80,12 +93,22 @@ public class Terrain
 		{
 			for(int j = 0; j < heights[0].length; j ++)
 			{
-				heights[i][j] = 3000*Math.random();;
+				double random = 3000*Math.random();
+				heights[i][j] = random;
+				if((int)(random) < 1450)
+				{
+					colors[i][j] = SECONDARY_COLOR;
+				}
+				else
+				{
+					colors[i][j] = COLOR;
+				}
+				
 			}
 		}
 	}
 	
-	/** Smoothes the heights array of instance method is invoked with
+	/** Smoothes the heights array and color distribution of instance method is invoked with
 	 * 
 	 */
 	public void smooth()
@@ -96,6 +119,8 @@ public class Terrain
 			{
 				double adjacentHeightNum = 0;
 				double adjacentHeightSum = 0;
+				
+				double sameColorCount = 0;
 				for(int k = Math.max(i - 1, 0); k <= Math.min(i + 1, heights.length - 1); k ++)
 				{
 					for(int l = Math.max(j - 1, 0); l <= Math.min(j + 1, heights[0].length - 1); l ++)
@@ -105,11 +130,59 @@ public class Terrain
 							adjacentHeightNum ++;
 							adjacentHeightSum += heights[k][l];
 						}
+						
+						if(colors[k][l].equals(colors[i][j]))
+						{
+							sameColorCount ++;
+						}
 					}
 					
 				}
 				double adjacentHeightAverage = adjacentHeightSum/adjacentHeightNum;
 				heights[i][j] = (heights[i][j] + SMOOTHING_FACTOR*adjacentHeightAverage)/(1 + SMOOTHING_FACTOR);
+				
+				if(Math.random() > sameColorCount/adjacentHeightNum)
+				{
+					colors[i][j] = changeColor(colors[i][j]);
+				}
+			}
+		}
+	}
+	
+	/** Smoothes the colors of the grid
+	 * 
+	 */
+	public void colorSmooth()
+	{
+		for(int i = 0; i < heights.length; i ++)
+		{
+			for(int j = 0; j < heights[0].length; j ++)
+			{
+				int adjacentNum = 0;
+				int redSum = 0;
+				int greenSum = 0;
+				int blueSum = 0;
+
+				for(int k = Math.max(i - 1, 0); k <= Math.min(i + 1, heights.length - 1); k ++)
+				{
+					for(int l = Math.max(j - 1, 0); l <= Math.min(j + 1, heights[0].length - 1); l ++)
+					{
+						if(!(k == i && l == j))
+						{
+							adjacentNum ++;
+							redSum += colors[k][l].getRed();
+							greenSum += colors[k][l].getGreen();
+							blueSum += colors[k][l].getBlue();
+						}
+					}
+					
+				}
+				
+				int newRed = (int)(((double)colors[i][j].getRed() + COLOR_SMOOTHING_FACTOR*redSum/(double)adjacentNum)/(1 + COLOR_SMOOTHING_FACTOR));
+				int newGreen = (int)(((double)colors[i][j].getGreen() + COLOR_SMOOTHING_FACTOR*greenSum/(double)adjacentNum)/(1 + COLOR_SMOOTHING_FACTOR));
+				int newBlue = (int)(((double)colors[i][j].getBlue() + COLOR_SMOOTHING_FACTOR*blueSum/(double)adjacentNum)/(1 + COLOR_SMOOTHING_FACTOR));
+				
+				colors[i][j] = new Color(newRed, newGreen, newBlue);
 			}
 		}
 	}
@@ -164,7 +237,7 @@ public class Terrain
 				
 				Point3D[] points = {Point1, Point2, Point3, Point4};
 				
-				polygons[i][j] = new Polygon3D(points, COLOR);
+				polygons[i][j] = new Polygon3D(points, colors[i][j]);
 			}
 		}
 	}
@@ -223,5 +296,17 @@ public class Terrain
 	public String toString()
 	{
 		return "(" + initialPoint.getX() + ", " + initialPoint.getY() + ") to (" + (initialPoint.getX() + getSpaceWidth()) + ", " + (initialPoint.getY() + getSpaceLength()) + ")";
+	}
+	
+	public static Color changeColor(Color color)
+	{
+		if(color.equals(SECONDARY_COLOR))
+		{
+			return COLOR;
+		}
+		else
+		{
+			return SECONDARY_COLOR;
+		}
 	}
 }

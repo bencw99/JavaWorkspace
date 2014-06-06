@@ -30,7 +30,7 @@ public abstract class Character
 	{
 		pos.setX(pos.getX() + vel.getXVel());
 		pos.setY(pos.getY() + vel.getYVel());
-		vel.setYVel(vel.getYVel() - Constants.gravity);
+		vel.setYVel(vel.getYVel() + Constants.gravity);
 		for(Platform platform : world.getPlatforms())
 		{
 			interact(platform);
@@ -51,7 +51,7 @@ public abstract class Character
 	public boolean isOn(Platform platform)
 	{
 		//Tests if character is in y-range of platform
-		if(Math.abs(((pos.getY() + height/2) - (platform.getPos().getY() - platform.getHeight()/2))) < 2)
+		if(Math.abs(((pos.getY() + height/2) - (platform.getPos().getY() - platform.getHeight()/2))) < 1)
 		{
 			//Tests if character is in x-range of platform
 			if(Math.abs((pos.getX() - platform.getPos().getX())) < platform.getWidth())
@@ -60,6 +60,18 @@ public abstract class Character
 			}
 		}
 		return false;
+	}
+	
+	public void jump()
+	{
+		ArrayList<Platform> possibles = world.getPlatforms();
+		for(Platform possible : possibles)
+		{
+			if(isOn(possible))
+			{
+				vel.setYVel(-5);
+			}
+		}
 	}
 	
 	public void draw(Graphics graphics)

@@ -65,6 +65,23 @@ public class PolygonProjection
 		return new PolygonProjection(rotatedPoints, priority, incline, color);
 	}
 	
+	
+	/** Translated this projected by the given values
+	 * 
+	 * @param xInc	the x-increment to be translated by
+	 * @param yInc	the y-increment to be translated by
+	 * @return a translated instance
+	 */
+	public PolygonProjection translate(int xInc, int yInc)
+	{
+		Point2D[] translatedPoints = new Point2D[points.length];
+		for(int i = 0; i < points.length; i ++)
+		{
+			translatedPoints[i] = new Point2D(points[i].getX() + xInc, points[i].getY() + yInc);
+		}
+		return new PolygonProjection(translatedPoints, priority, incline, color);
+	}
+	
 	/** Draws this instance on to the given Graphics object
 	 * 
 	 * @param graphics	the graphics object drawn on

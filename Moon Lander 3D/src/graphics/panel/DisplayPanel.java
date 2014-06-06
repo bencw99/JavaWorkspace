@@ -19,10 +19,10 @@ public class DisplayPanel extends JPanel implements KeyListener
 	
 	public static void main(String[]args)
 	{
-        terrain = new Terrain(100, 150, new Point2D(-4700, 1500));
+        terrain = new Terrain(100, 150, new Point2D(-3000, 0));
         terrain.init();
 		
-        view = new View(new Point3D(700, -2000, 3600), new Point3D(700, 2000, 1867), Math.PI);
+        view = new View(new Point3D(4000, 2000, 6000), new Point3D(4000, 12000, 2000), Math.PI*0.97);
         
         frame.setSize(panelWidth,panelHeight);
         frame.setTitle("Terrain");
@@ -120,5 +120,4 @@ public class DisplayPanel extends JPanel implements KeyListener
 	{
 
 	}
-
 }
