@@ -11,20 +11,21 @@ import javax.swing.*;
 
 public class DisplayPanel extends JPanel implements KeyListener
 {
-	public static final int panelWidth = 500;
-	public static final int panelHeight = 500;
+	public static final int WIDTH = 1000;
+	public static final int HEIGHT = 700;
 	private static Terrain terrain;
 	private static View view;
     private static JFrame frame = new JFrame();
 	
 	public static void main(String[]args)
 	{
-        terrain = new Terrain(100, 150, new Point2D(-3000, 0));
-        terrain.init();
-		
-        view = new View(new Point3D(4000, 2000, 6000), new Point3D(4000, 12000, 2000), Math.PI*0.97);
+        view = new View(new Point3D(5000, 5000, 7500), new Point3D(5000, 5000, 100), Math.PI, WIDTH, HEIGHT);
+//        view = new View(new Point3D(-1000, -12000, 9000), new Point3D(0, 5000, 4500), Math.PI);
         
-        frame.setSize(panelWidth,panelHeight);
+        terrain = new Terrain(100, 100, new Point2D(0, 0));
+        terrain.create();
+        
+        frame.setSize(WIDTH,HEIGHT);
         frame.setTitle("Terrain");
         frame.setLocationRelativeTo(null);
         frame.setBackground(Color.WHITE);
@@ -34,19 +35,18 @@ public class DisplayPanel extends JPanel implements KeyListener
         frame.addKeyListener(panel);
         frame.setVisible(true);
 
-        System.out.println(terrain);
-//        for(double i = 0; i < 1000; i += 1)
+//        for(double i = 0; i < 5000; i += 1)
 //        {	
 //        	try
 //			{
-//				Thread.sleep(100);
+//				Thread.sleep(5);
 //			} 
 //        	catch (InterruptedException e)
 //			{
 //				e.printStackTrace();
 //			}
-//        	terrain.smooth();
-//        	terrain.loadPolys();
+//        	
+//        	view.translateView(0, -1, 0);
 //        	frame.repaint();
 //        }
 	}
@@ -54,9 +54,6 @@ public class DisplayPanel extends JPanel implements KeyListener
 	public void paintComponent(Graphics graphics)
 	{
 		terrain.draw(graphics);
-//		poly.getProjection(view).paint(graphics);
-//		poly2.getProjection(view).paint(graphics);
-//		poly3.getProjection(view).paint(graphics);
 	}
 	
 	public static View getView()
@@ -106,7 +103,12 @@ public class DisplayPanel extends JPanel implements KeyListener
 		
 		if(code == '7')
 		{
-			view.zoom(1.2);
+			view.zoom(0.95);
+		}
+		
+		if(code == '8')
+		{
+			view.zoom(1.05);
 		}
 		frame.repaint();
 	}

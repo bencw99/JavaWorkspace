@@ -1,6 +1,7 @@
 package game.terrain;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import graphics.panel.*;
 import graphics.polygon.*;
@@ -17,11 +18,35 @@ public class Terrain
 	/** The array of polygons used to represent the terrain between nodes */
 	private Polygon3D[][] polygons;
 	
-	/** The array of Colors used to represent the color of each polygon in the array*/
+	/** The array list of polygon projections used to represent polygons viewed */
+	private ArrayList<PolygonProjection> projections;
+	
+	/** The array of Colors used to represent the color of each polygon in the array */
 	private Color[][] colors;
+	
+	/** The view through which this instance is viewed */
+	private View view;
 	
 	/** The point in 2D space for the initial x and y coordinates of the terrain */
 	private final Point2D initialPoint;
+	
+	/** The maximum height for any point on the grid */
+	private final double maxHeight;
+	
+	/** The height below which the secondary color is initially drawn */
+	private final double secondaryHeight;
+	
+	/** The height below which water forms */
+	private final double waterHeight;
+	
+	/** The default maximum height for all terrains */
+	private static final double MAX_HEIGHT = 3000;
+	
+	/** The default secondary height for all grids */
+	private static final double SECONDARY_HEIGHT = 1450;
+	
+	/** The default water height for all grids */
+	private static final double WATER_HEIGHT = 1400;
 	
 	/** The distance between adjacent nodes */
 	public static final double NODE_DIST = 100;
@@ -30,15 +55,16 @@ public class Terrain
 	public static final double SMOOTHING_FACTOR = 0.05;
 	
 	/** The factor determining the amount color smoothed per call of colorSmooth */
-	public static final double COLOR_SMOOTHING_FACTOR = 0.05;
+	public static final double COLOR_SMOOTHING_FACTOR = 0.2;
 	
 	/** The base color for all terrain instances */
 	public static final Color COLOR = new Color(210, 160, 90);
-//	public static final Color COLOR = new Color(28, 107, 160);
 	
 	/** The base color for all terrain instances */
 	public static final Color SECONDARY_COLOR = new Color(30, 140, 10);
-//	public static final Color SECONDARY_COLOR = new Color(28, 107, 160);
+	
+	/** The color for water on the terrain */
+	public static final Color WATER_COLOR = new Color(28, 107, 160);
 	
 	/** Parameterized constructor, initializes height array
 	 * 
@@ -50,38 +76,55 @@ public class Terrain
 		this(length, width, new Point2D(0, 0));
 	}
 	
-	/** Parameterized constructor, initializes height array
+	/** Parameterized constructor, initializes height array and location of terrain in space
 	 * 
 	 * @param length	the length of this instance
 	 * @param width		the width of this instance
+	 * @param initialiPoint	the top left corner x and y coordinates of the terrain
 	 */
 	public Terrain(int length, int width, Point2D initialPoint)
+	{
+		this(length, width, initialPoint, MAX_HEIGHT, SECONDARY_HEIGHT, WATER_HEIGHT);
+	}
+	
+	/** Parameterized constructor, initializes height array, location of terrain in space, and heights for water and different colors
+	 * 
+	 * @param length	the length of this instance
+	 * @param width		the width of this instance
+	 * @param initialiPoint	the top left corner x and y coordinates of the terrain
+	 * @param maxHeight	the value the maximum height of the terrain will be set to
+	 * @param secondaryHeight	the value the secondary color height of the terrain will be set to
+	 * @param waterHeight	the value the water height of the terrain will be set to
+	 */
+	public Terrain(int length, int width, Point2D initialPoint, double maxHeight, double secondaryHeight, double waterHeight)
 	{
 		heights = new double[length][width];
 		polygons = new Polygon3D[length - 1][width - 1];
 		colors = new Color[length][width];
+		projections = new ArrayList<PolygonProjection>();
 		this.initialPoint = initialPoint;
+		this.maxHeight = maxHeight;
+		this.secondaryHeight = secondaryHeight;
+		this.waterHeight = waterHeight;
 	}
 	
 	/** A method to quickly create and load the actual terrain, used after constructor is invoked
 	 * 
 	 */
-	public void init()
+	public void create()
 	{
 		generate();
 		for(int i = 0; i < 100; i ++)
 		{
 			smooth();
 		}
-//		for(int i = 0; i < 100; i ++)
-//		{
-//			smooth(0, 0, 50, 150);
-//		}
-		for(int i = 0; i < 30; i ++)
+		water(waterHeight);
+		for(int i = 0; i < 10; i ++)
 		{
 			colorSmooth();
 		}
 		loadPolys();
+		loadProjections(DisplayPanel.getView());
 	}
 	
 	/** Randomly generates a terrain by filling up the height array with random values
@@ -93,9 +136,9 @@ public class Terrain
 		{
 			for(int j = 0; j < heights[0].length; j ++)
 			{
-				double random = 3000*Math.random();
+				double random = maxHeight*Math.random();
 				heights[i][j] = random;
-				if((int)(random) < 1450)
+				if((int)(random) < secondaryHeight)
 				{
 					colors[i][j] = SECONDARY_COLOR;
 				}
@@ -149,6 +192,39 @@ public class Terrain
 		}
 	}
 	
+	/** Smoothes the heights array of instance method is invoked with
+	 * 
+	 * @param xStart	the starting x-index for the region to be smoothed
+	 * @param yStart	the starting y-index for the region to be smoothed
+	 * @param xEnd		the ending x-index for the region to be smoothed
+	 * @param yEnd		the ending y-index for the region to be smoothed
+	 */
+	public void smooth(int xStart, int yStart, int xEnd, int yEnd)
+	{
+		for(int i = xStart; i < xEnd; i ++)
+		{
+			for(int j = yStart; j < yEnd; j ++)
+			{
+				double adjacentHeightNum = 0;
+				double adjacentHeightSum = 0;
+				for(int k = Math.max(i - 1, 0); k <= Math.min(i + 1, heights.length - 1); k ++)
+				{
+					for(int l = Math.max(j - 1, 0); l <= Math.min(j + 1, heights[0].length - 1); l ++)
+					{
+						if(!(k == i && l == j))
+						{
+							adjacentHeightNum ++;
+							adjacentHeightSum += heights[k][l];
+						}
+					}
+					
+				}
+				double adjacentHeightAverage = adjacentHeightSum/adjacentHeightNum;
+				heights[i][j] = (heights[i][j] + SMOOTHING_FACTOR*adjacentHeightAverage)/(1 + SMOOTHING_FACTOR);
+			}
+		}
+	}
+	
 	/** Smoothes the colors of the grid
 	 * 
 	 */
@@ -187,35 +263,21 @@ public class Terrain
 		}
 	}
 	
-	/** Smoothes the heights array of instance method is invoked with
+	/** Colors water on the map below the given height
 	 * 
-	 * @param xStart	the starting x-index for the region to be smoothed
-	 * @param yStart	the starting y-index for the region to be smoothed
-	 * @param xEnd		the ending x-index for the region to be smoothed
-	 * @param yEnd		the ending y-index for the region to be smoothed
+	 * @param height	the height below which there is water
 	 */
-	public void smooth(int xStart, int yStart, int xEnd, int yEnd)
+	public void water(double height)
 	{
-		for(int i = xStart; i < xEnd; i ++)
+		for(int i = 0; i < heights.length; i ++)
 		{
-			for(int j = yStart; j < yEnd; j ++)
+			for(int j = 0; j < heights[0].length; j ++)
 			{
-				double adjacentHeightNum = 0;
-				double adjacentHeightSum = 0;
-				for(int k = Math.max(i - 1, 0); k <= Math.min(i + 1, heights.length - 1); k ++)
+				if(heights[i][j] < height)
 				{
-					for(int l = Math.max(j - 1, 0); l <= Math.min(j + 1, heights[0].length - 1); l ++)
-					{
-						if(!(k == i && l == j))
-						{
-							adjacentHeightNum ++;
-							adjacentHeightSum += heights[k][l];
-						}
-					}
-					
+					colors[i][j] = WATER_COLOR;
+					heights[i][j] = height;
 				}
-				double adjacentHeightAverage = adjacentHeightSum/adjacentHeightNum;
-				heights[i][j] = (heights[i][j] + SMOOTHING_FACTOR*adjacentHeightAverage)/(1 + SMOOTHING_FACTOR);
 			}
 		}
 	}
@@ -242,28 +304,35 @@ public class Terrain
 		}
 	}
 	
+	/** Loads the projections into the projections array list from the given view with this instance's polygons
+	 * 
+	 * @param view	the view the projections will be projected on
+	 */
+	public void loadProjections(View view)
+	{
+		projections.clear();
+		
+		for(int i = 0; i < polygons.length; i ++)
+		{
+			for(int j = 0; j < polygons[0].length; j ++)
+			{
+				 projections.add(polygons[i][j].getProjection(view));
+			}
+		}
+	}
+	
 	/** Paints this instance on to the given graphics object
 	 * 
 	 * @param graphics	the graphics object this instance will be drawn on
 	 * @return 
 	 */
 	public void draw(Graphics graphics)
-	{
-		
-//		TreeMap<Double, PolygonProjection> polyMap = new TreeMap<Double, PolygonProjection>();
-//		
-//		for(int i = 0; i < polygons.length; i ++)
+	{	
+//		loadProjections(DisplayPanel.getView());
+//		PolygonProjection.sort(projections);
+//		for (int i = projections.size() - 1; i >= 0; i --) 
 //		{
-//			for(int j = 0; j < polygons[0].length; j ++)
-//			{
-//				PolygonProjection currentPoly = polygons[i][j].getProjection(DisplayPanel.getView());
-//				polyMap.put(currentPoly.getPriority(), currentPoly);
-//			}
-//		}
-//		
-//		for (Map.Entry<Double, PolygonProjection> entry : polyMap.entrySet()) 
-//		{
-//	        entry.getValue().draw(graphics);
+//	        projections.get(i).draw(graphics);
 //		}
 		
 		for(int i = 0; i < polygons.length; i ++)
@@ -293,12 +362,7 @@ public class Terrain
 		return NODE_DIST*heights[0].length;
 	}
 	
-	public String toString()
-	{
-		return "(" + initialPoint.getX() + ", " + initialPoint.getY() + ") to (" + (initialPoint.getX() + getSpaceWidth()) + ", " + (initialPoint.getY() + getSpaceLength()) + ")";
-	}
-	
-	public static Color changeColor(Color color)
+	private static Color changeColor(Color color)
 	{
 		if(color.equals(SECONDARY_COLOR))
 		{

@@ -54,7 +54,21 @@ public abstract class Character
 		if(Math.abs(((pos.getY() + height/2) - (platform.getPos().getY() - platform.getHeight()/2))) < 1)
 		{
 			//Tests if character is in x-range of platform
-			if(Math.abs((pos.getX() - platform.getPos().getX())) < platform.getWidth())
+			if(Math.abs((pos.getX() - platform.getPos().getX())) < platform.getWidth()/2)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean shouldBeOn(Platform platform)
+	{
+		//Tests if character is in y-range of platform
+		if(Math.abs(((pos.getY() + height/2) - (platform.getPos().getY() - platform.getHeight()/2))) < 1)
+		{
+			//Tests if character is in x-range of platform
+			if(Math.abs((pos.getX() - platform.getPos().getX())) < platform.getWidth()/2)
 			{
 				return true;
 			}
