@@ -1,7 +1,5 @@
 package graphics.projection;
 
-import graphics.polygon.Polygon3D;
-
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -22,6 +20,12 @@ public class PolygonProjection
 	/** The incline at which the polygon represented by this projection is */
 	private double incline;
 	
+	/** The value representing whether or not this instance is being highlighted */
+	private boolean highlighted;
+	
+	/** The color with which this instance is highlighted */
+	private final Color highlightColor;
+	
 	/** Parameterized constructor, initializes point array of instance to given array of points and the priority to 0
 	 * 
 	 * @param points	The Point2D array this instance will be initialized to
@@ -31,7 +35,7 @@ public class PolygonProjection
 		this(points, 0, 0, Color.LIGHT_GRAY);
 	}
 	
-	/** Parameterized constructor, initializes point array of instance to given array of points and the priority to the given priority
+	/** Parameterized constructor, initializes point array of instance to given array of points the priority to the given priority, incline, and color
 	 * 
 	 * @param points	the Point2D array this instance will be initialized to
 	 * @param priority	the priority this instance will be initialized to have
@@ -40,10 +44,35 @@ public class PolygonProjection
 	 */
 	public PolygonProjection(Point2D[] points, double priority, double incline, Color color)
 	{
+		this(points, priority, incline, color, new Color(200, 232, 255));
+	}
+	
+	/** Parameterized constructor, initializes point array of instance to given array of points, the priority to the given priority, incline, and color
+	 * 
+	 * @param points	the Point2D array this instance will be initialized to
+	 * @param priority	the priority this instance will be initialized to have
+	 * @param incline	the incline this instance will be set to
+	 * @param color		the color this projection is drawn with
+	 * @param highlightColor	the color the highlight of this projection is drawn with
+	 */
+	public PolygonProjection(Point2D[] points, double priority, double incline, Color color, Color highlightColor)
+	{
 		this.points = points;
 		this.priority = priority;
 		this.incline = incline;
 		this.color = color;
+		this.highlightColor = highlightColor;
+		this.highlighted = false;
+	}
+	
+	/** Returns a rotated instance of PolygonProjection rotated about the origin through the given angle
+	 * 
+	 * @param angle	the angle rotated through
+	 * @return an instance of PolygonProjection that is a rotated form of this instance
+	 */
+	public PolygonProjection rotate(double angle)
+	{
+		return rotate(new Point2D(0, 0), angle);
 	}
 	
 	/** Returns a rotated instance of PolygonProjection rotated about the given point through the given angle
@@ -58,16 +87,15 @@ public class PolygonProjection
 		
 		for(int i = 0; i < points.length; i ++)
 		{
-			double xCoord = points[i].getX();
-			double yCoord = points[i].getY();
+			double xCoord = points[i].getX() - point.getX();
+			double yCoord = points[i].getY() - point.getY();
 			double cos = Math.cos(angle);
 			double sin = Math.sin(angle);
-			rotatedPoints[i] = new Point2D(xCoord*cos - yCoord*sin, xCoord*sin + yCoord*cos);
+			rotatedPoints[i] = new Point2D(xCoord*cos - yCoord*sin + point.getX(), xCoord*sin + yCoord*cos + point.getY());
 		}
 		
 		return new PolygonProjection(rotatedPoints, priority, incline, color);
 	}
-	
 	
 	/** Translated this projected by the given values
 	 * 
@@ -85,6 +113,26 @@ public class PolygonProjection
 		return new PolygonProjection(translatedPoints, priority, incline, color);
 	}
 	
+	/** Properly highlights this instance based on the cursor location
+	 * 
+	 * @param cursorCoord	the location of the cursor on the screen
+	 */
+	public void highlight(Point2D coord)
+	{	
+		int[] xPoints = new int[points.length];
+		int[] yPoints = new int[points.length];
+		
+		for(int i = 0; i < points.length; i ++)
+		{
+			xPoints[i] = (int)points[i].getX();
+			yPoints[i] = (int)points[i].getY();
+		}
+		
+		Polygon thisPoly = new Polygon(xPoints, yPoints, points.length);
+		
+		highlighted = thisPoly.contains(coord.getX(), coord.getY());
+	}
+	
 	/** Draws this instance on to the given Graphics object
 	 * 
 	 * @param graphics	the graphics object drawn on
@@ -93,7 +141,7 @@ public class PolygonProjection
 	{
 		Color currentColor = graphics.getColor();
 		
-		Color inclinedColor = darken(color, incline*20);
+		Color inclinedColor = darken(color, 30*incline);
 		
 		graphics.setColor(inclinedColor);
 		
@@ -108,9 +156,14 @@ public class PolygonProjection
 		
 		graphics.fillPolygon(xPoints, yPoints, points.length);
 		
-		graphics.setColor(darken(inclinedColor, 20));
+		graphics.setColor(highlighted ? highlightColor : darken(inclinedColor, 15));
 		
 		graphics.drawPolygon(xPoints, yPoints, points.length);
+		
+		/*
+		 * Triangulization:
+		 * graphics.drawLine(xPoints[0], yPoints[0], xPoints[2], yPoints[2]);
+		 */
 		
 		graphics.setColor(currentColor);
 	}
@@ -177,11 +230,12 @@ public class PolygonProjection
 		return new Color(red, green, blue);
 	}
 	
-	/**	Sorts the given array based on priority, changes reference
+	/**	Sorts the given array based on priority
 	 * 
 	 * @param polygons	the polygon projection array list to be sorted
+	 * @return a sorted ArrayList of PolygonProjecton objects from the given array
 	 */
-	public static void sort(ArrayList<PolygonProjection> polygons)
+	public static ArrayList<PolygonProjection> sort(ArrayList<PolygonProjection> polygons)
 	{
 		ArrayList<PolygonProjection> sorted = new ArrayList<PolygonProjection>();
 		sorted.add(polygons.get(0));
@@ -201,6 +255,6 @@ public class PolygonProjection
 				}
 			}
 		}
-		polygons = sorted;
+		return sorted;
 	}
 }

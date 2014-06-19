@@ -23,8 +23,8 @@ public class View
 	private int height;
 	
 	/** The factor determining the rate of change in view size due to perspective */
-	public static final double EYE_PLANE_DIST = 700.0;
-	
+	public double focalLength = 700.0;
+
 	/** Parameterized constructor, initializes the point viewed to and from
 	 * @param viewPoint	the point being viewed from
 	 * @param viewedPoint	the point being viewed
@@ -88,10 +88,11 @@ public class View
 	 */
 	public void zoom(double magnification)
 	{
-		double xInc = (magnification - 1)*(viewedPoint.getX() - viewPoint.getX());
-		double yInc = (magnification - 1)*(viewedPoint.getY() - viewPoint.getY());
-		double zInc = (magnification - 1)*(viewedPoint.getZ() - viewPoint.getZ());
-		viewPoint = viewPoint.translate(xInc, yInc, zInc);
+		focalLength *= magnification;
+//		double xInc = (magnification - 1)*(viewedPoint.getX() - viewPoint.getX());
+//		double yInc = (magnification - 1)*(viewedPoint.getY() - viewPoint.getY());
+//		double zInc = (magnification - 1)*(viewedPoint.getZ() - viewPoint.getZ());
+//		viewPoint = viewPoint.translate(xInc, yInc, zInc);
 	}
 	
 	/**
@@ -133,6 +134,14 @@ public class View
 	{
 		return height;
 	}
+	
+	/**
+	 * @return the focal length
+	 */
+	public double getFocalLength()
+	{
+		return focalLength;
+	}
 
 	/**
 	 * @param viewPoint the value the point viewed from is set to
@@ -172,5 +181,13 @@ public class View
 	public void setHeight(int height)
 	{
 		this.height = height;
+	}
+
+	/**
+	 * @param focalLength the value the focal length is set to
+	 */
+	public void setFocalLength(double focalLength)
+	{
+		this.focalLength = focalLength;
 	}
 }

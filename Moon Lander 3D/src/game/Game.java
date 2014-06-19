@@ -6,6 +6,6 @@ import game.terrain.*;
 
 public class Game
 {
-	private Terrain terrain;
+	private RectangularTerrain terrain;
 	private ArrayList<Component> components;
 }

@@ -178,14 +178,14 @@ public class Polygon3D
 		for(int i = 0; i < points.length; i ++)
 		{
 			/* Deals with polygons behind view plane */
-			if(rotatedPoints[i].getZ() < -1)
+			if(rotatedPoints[i].getZ() < -5)
 			{
 				return new PolygonProjection(new Point2D[0]);
 			}
 			
 			/* Projection perspective calculations */
-			double perspectiveMod = View.EYE_PLANE_DIST/(rotatedPoints[i].getZ() + View.EYE_PLANE_DIST);
-			projectedPoints[i] = new Point2D(perspectiveMod*rotatedPoints[i].getX() - view.getWidth()/2, perspectiveMod*rotatedPoints[i].getY() - view.getHeight()/2);
+			double perspectiveMod = view.getFocalLength()/(rotatedPoints[i].getZ() + view.getFocalLength());
+			projectedPoints[i] = new Point2D(perspectiveMod*rotatedPoints[i].getX() + view.getWidth()/2, perspectiveMod*rotatedPoints[i].getY() + view.getHeight()/2);
 			
 			/* Projection incline calculations */
 			if(rotatedPoints[i].getZ() > maxPoint.getZ())
@@ -203,9 +203,9 @@ public class Polygon3D
 		
 		double priority = zSum/rotatedPoints.length;
 		
-		double incline = (maxPoint.getZ() - minPoint.getZ())/Math.sqrt(Math.pow(maxPoint.getX() - minPoint.getX(), 2) + Math.pow(maxPoint.getY() - minPoint.getY(), 2)); 
+		double incline = Math.abs(maxPoint.getZ() - minPoint.getZ())/Math.sqrt(Math.pow(maxPoint.getX() - minPoint.getX(), 2) + Math.pow(maxPoint.getY() - minPoint.getY(), 2)); 
 		
-		return ((new PolygonProjection(projectedPoints, priority, incline, color)).rotate(new Point2D(viewPoint.getX(), viewPoint.getY()), view.getTurnAngle()));
+		return ((new PolygonProjection(projectedPoints, priority, incline, color)).rotate(new Point2D(view.getWidth()/2, view.getHeight()/2), view.getTurnAngle()));
 	}
 	
 	/**
