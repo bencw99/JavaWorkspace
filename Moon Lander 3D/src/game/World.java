@@ -4,8 +4,8 @@ import java.util.*;
 import game.component.*;
 import game.terrain.*;
 
-public class Game
+public class World
 {
-	private RectangularTerrain terrain;
+	private Terrain terrain;
 	private ArrayList<Component> components;
 }

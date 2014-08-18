@@ -1,5 +1,6 @@
 package game.terrain;
 
+import game.Drawable;
 import graphics.panel.DisplayPanel;
 import graphics.polygon.Polygon3D;
 import graphics.projection.Point2D;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 /** A parent class for various types of terrains
  * @author Benjamin Cohen-Wang
  */
-public abstract class Terrain
+public abstract class Terrain implements Drawable
 {
 	/** The array representing the height at each node of the terrain */
 	protected double[][] heights;
@@ -31,37 +32,40 @@ public abstract class Terrain
 	protected View view;
 	
 	/** The maximum height for any point on the grid */
-	protected final double maxHeight;
+	protected double maxHeight;
 	
 	/** The height below which the secondary color is initially drawn */
-	protected final double secondaryHeight;
+	protected double secondaryHeight;
 	
 	/** The height below which water forms */
-	protected final double waterHeight;
-	
-	/** The default maximum height for all terrains */
-	protected static final double MAX_HEIGHT = 4000;
-	
-	/** The default secondary height for all grids */
-	protected static final double SECONDARY_HEIGHT = 1950;
-	
-	/** The default water height for all grids */
-	protected static final double WATER_HEIGHT = 1900;
+	protected double waterHeight;
 	
 	/** The factor determining the amount smoothed per call of smooth */
 	public static final double SMOOTHING_FACTOR = 0.05;
 	
+	/** The factor determining the amount the terrain type is smoothed per call of smooth */
+	public static final double TYPE_SMOOTHING_FACTOR = 0.05;
+	
 	/** The factor determining the amount color smoothed per call of colorSmooth */
 	public static final double COLOR_SMOOTHING_FACTOR = 0.2;
 	
-	/** The base color for all terrain instances */
-	public static final Color COLOR = new Color(210, 160, 90);
+	/** The array storing the colors of different parts of the terrain */
+	public static final Color[] TERRAIN_TYPES = {new Color(210, 160, 90), new Color(30, 140, 10), new Color(28, 107, 160), new Color(255, 255, 255)};
 	
-	/** The base color for all terrain instances */
-	public static final Color SECONDARY_COLOR = new Color(30, 140, 10);
+	/** The index of TERRAIN_TYPES that holds the color for dirt */
+	private static final int DIRT = 0;
 	
-	/** The color for water on the terrain */
-	public static final Color WATER_COLOR = new Color(28, 107, 160);
+	/** The index of TERRAIN_TYPES that holds the color for grass */
+	private static final int GRASS = 1;
+	
+	/** The index of TERRAIN_TYPES that holds the color for water */
+	private static final int WATER = 2;
+	
+	/** The index of TERRAIN_TYPES that holds the color for ice */
+	private static final int ICE = 3;
+	
+	/** The index of TERRAIN_TYPES that holds the color for rocks */
+	private static final int ROCK = 4;
 	
 	/** Parameterized constructor, initializes height array
 	 * 
@@ -70,7 +74,10 @@ public abstract class Terrain
 	 */
 	public Terrain(int length, int width)
 	{
-		this(length, width, MAX_HEIGHT, SECONDARY_HEIGHT, WATER_HEIGHT);
+		heights = new double[length][width];
+		polygons = new Polygon3D[length - 1][width - 1];
+		colors = new Color[length][width];
+		projections = new ArrayList<PolygonProjection>();
 	}
 	
 	/** Parameterized constructor, initializes height array and heights for water and different colors
@@ -92,6 +99,16 @@ public abstract class Terrain
 		this.waterHeight = waterHeight;
 	}
 	
+	/** Sets the maximum, secondary and water heights to their default values
+	 * 
+	 */
+	public void setDefaultAttributes()
+	{
+		this.maxHeight = getDefaultMaxHeight();
+		this.secondaryHeight = getDefaultSecondaryHeight();
+		this.waterHeight = getDefaultWaterHeight();
+	}
+	
 	/** A method to quickly create and load the actual terrain, used after constructor is invoked
 	 * 
 	 */
@@ -102,7 +119,11 @@ public abstract class Terrain
 		{
 			smooth();
 		}
-		water(waterHeight);
+		for(int i = 0; i < 150; i ++)
+		{
+			typeSmooth();
+		}
+		water();
 		for(int i = 0; i < 10; i ++)
 		{
 			colorSmooth();
@@ -124,11 +145,11 @@ public abstract class Terrain
 				heights[i][j] = random;
 				if((int)(random) < secondaryHeight)
 				{
-					colors[i][j] = SECONDARY_COLOR;
+					colors[i][j] = TERRAIN_TYPES[GRASS];
 				}
 				else
 				{
-					colors[i][j] = COLOR;
+					colors[i][j] = TERRAIN_TYPES[DIRT];
 				}
 				
 			}
@@ -152,36 +173,111 @@ public abstract class Terrain
 	 */
 	public void smooth(int xStart, int yStart, int xEnd, int yEnd)
 	{
+		boolean wrapAround = wrapsAround();
+		
 		for(int i = xStart; i < xEnd; i ++)
 		{
 			for(int j = yStart; j < yEnd; j ++)
 			{
-				double adjacentHeightNum = 0;
+				int adjacentHeightNum = 0;
 				double adjacentHeightSum = 0;
 				
-				double sameColorCount = 0;
-				for(int k = Math.max(i - 1, 0); k <= Math.min(i + 1, heights.length - 1); k ++)
+				for(int k = i - 1; k <= i + 1; k ++)
 				{
-					for(int l = Math.max(j - 1, 0); l <= Math.min(j + 1, heights[0].length - 1); l ++)
+					if(wrapAround || (k != -1 && k != heights.length))
 					{
-						if(!(k == i && l == j))
+						for(int l = j - 1; l <= j + 1; l ++)
 						{
-							adjacentHeightNum ++;
-							adjacentHeightSum += heights[k][l];
+							if(wrapAround || (l != -1 && l != heights[0].length))
+							{
+								int wrapperK = (k + heights.length) % heights.length;
+								int wrapperL = (l + heights[0].length) % heights[0].length;
+								
+								if(!(k == i && l == j))
+								{
+									adjacentHeightNum ++;
+									adjacentHeightSum += heights[wrapAround ? wrapperK : k][wrapAround ? wrapperL : l];
+								}
+							}
 						}
-						
-						if(colors[k][l].equals(colors[i][j]))
-						{
-							sameColorCount ++;
-						}
-					}	
+					}
 				}
 				double adjacentHeightAverage = adjacentHeightSum/adjacentHeightNum;
 				heights[i][j] = (heights[i][j] + SMOOTHING_FACTOR*adjacentHeightAverage)/(1 + SMOOTHING_FACTOR);
+			}
+		}
+	}
+	
+	/** Smoothes the types of terrains making up the grid
+	 * 
+	 */
+	public void typeSmooth()
+	{
+		this.typeSmooth(0, 0, heights.length, heights[0].length);
+	}
+	
+	/** Smoothes the types of terrains making up the grid
+	 * 
+	 * @param xStart	the starting x-index for the region to be smoothed
+	 * @param yStart	the starting y-index for the region to be smoothed
+	 * @param xEnd		the ending x-index for the region to be smoothed
+	 * @param yEnd		the ending y-index for the region to be smoothed
+	 */
+	public void typeSmooth(int xStart, int yStart, int xEnd, int yEnd)
+	{
+		boolean wrapAround = wrapsAround();
+		
+		for(int i = xStart; i < xEnd; i ++)
+		{
+			for(int j = yStart; j < yEnd; j ++)
+			{
+				double[] typeCount = new double[TERRAIN_TYPES.length];
 				
-				if(Math.random() > sameColorCount/adjacentHeightNum)
+				for(int k = i - 1; k <= i + 1; k ++)
 				{
-					colors[i][j] = changeColor(colors[i][j]);
+					if(wrapAround || (k != -1 && k != heights.length))
+					{
+						for(int l = j - 1; l <= j + 1; l ++)
+						{
+							if(wrapAround || (l != -1 && l != heights[0].length))
+							{
+								int wrapperK = (k + heights.length) % heights.length;
+								int wrapperL = (l + heights[0].length) % heights[0].length;
+								
+								for(int type = 0; type < TERRAIN_TYPES.length; type ++)
+								{
+									if(colors[wrapAround ? wrapperK : k][wrapAround ? wrapperL : l].equals(TERRAIN_TYPES[type]))
+									{
+										typeCount[type] ++;
+										
+										if(colors[i][j].equals(TERRAIN_TYPES[type]))
+										{
+											typeCount[type] += 0.8;
+										}
+									}
+								}
+							}
+						}
+					}	
+				}
+				
+				double random = Math.random();
+				double sum = 0;
+				double typeCountSum = 0;
+				
+				for(double typeNum : typeCount)
+				{
+					typeCountSum += typeNum;
+				}
+				
+				for(int type = 0; type < TERRAIN_TYPES.length; type ++)
+				{
+					double nextInc = typeCount[type]/typeCountSum;
+					if(random > sum && random < sum + nextInc)
+					{
+						colors[i][j] = TERRAIN_TYPES[type];
+					}
+					sum += nextInc;
 				}
 			}
 		}
@@ -192,6 +288,8 @@ public abstract class Terrain
 	 */
 	public void colorSmooth()
 	{
+		boolean wrapAround = wrapsAround();
+		
 		for(int i = 0; i < heights.length; i ++)
 		{
 			for(int j = 0; j < heights[0].length; j ++)
@@ -201,19 +299,27 @@ public abstract class Terrain
 				int greenSum = 0;
 				int blueSum = 0;
 
-				for(int k = Math.max(i - 1, 0); k <= Math.min(i + 1, heights.length - 1); k ++)
+				for(int k = i - 1; k <= i + 1; k ++)
 				{
-					for(int l = Math.max(j - 1, 0); l <= Math.min(j + 1, heights[0].length - 1); l ++)
+					if(wrapAround || (k != -1 && k != heights.length))
 					{
-						if(!(k == i && l == j))
+						for(int l = j - 1; l <= j + 1; l ++)
 						{
-							adjacentNum ++;
-							redSum += colors[k][l].getRed();
-							greenSum += colors[k][l].getGreen();
-							blueSum += colors[k][l].getBlue();
+							if(wrapAround || (l != -1 && l != heights[0].length))
+							{
+								if(!(k == i && l == j))
+								{
+									int wrapperK = (k + heights.length) % heights.length;
+									int wrapperL = (l + heights[0].length) % heights[0].length;
+									
+									adjacentNum ++;
+									redSum += colors[wrapAround ? wrapperK : k][wrapAround ? wrapperL : l].getRed();
+									greenSum += colors[wrapAround ? wrapperK : k][wrapAround ? wrapperL : l].getGreen();
+									blueSum += colors[wrapAround ? wrapperK : k][wrapAround ? wrapperL : l].getBlue();
+								}
+							}
 						}
 					}
-					
 				}
 				
 				int newRed = (int)(((double)colors[i][j].getRed() + COLOR_SMOOTHING_FACTOR*redSum/(double)adjacentNum)/(1 + COLOR_SMOOTHING_FACTOR));
@@ -224,8 +330,15 @@ public abstract class Terrain
 			}
 		}
 	}
-	
 
+	/** Colors water on the map below the water height
+	 * 
+	 */
+	public void water()
+	{
+		this.water(waterHeight);
+	}
+	
 	/** Colors water on the map below the given height
 	 * 
 	 * @param height	the height below which there is water
@@ -238,9 +351,28 @@ public abstract class Terrain
 			{
 				if(heights[i][j] < height)
 				{
-					colors[i][j] = WATER_COLOR;
+					colors[i][j] = TERRAIN_TYPES[WATER];
 					heights[i][j] = height;
 				}
+			}
+		}
+	}
+	
+	/** Colors ice on the map
+	 * 
+	 */
+	public void ice()
+	{
+		for(int i = 0; i < heights.length; i ++)
+		{
+			for(int j = (int)(heights[0].length*0.65); j < (int)(heights[0].length*0.85); j ++)
+			{
+					colors[i][j] = TERRAIN_TYPES[ICE];
+			}
+			
+			for(int j = (int)(heights[0].length*0.35); j > (int)(heights[0].length*0.15); j --)
+			{
+					colors[i][j] = TERRAIN_TYPES[ICE];
 			}
 		}
 	}
@@ -291,7 +423,31 @@ public abstract class Terrain
 	/** Sets the polygons between terrain nodes using the height array 
 	 * 
 	 */
-	public abstract void loadPolys();
+	protected abstract void loadPolys();
+	
+	/** Gets the factor determining whether or not this terrain wraps around
+	 * 
+	 * @return whether or not this terrain wraps around
+	 */
+	public abstract boolean wrapsAround();
+	
+	/** Gets the default maximum height for this terrain 
+	 * 
+	 * @return the default maximum height for this terrain
+	 */
+	protected abstract double getDefaultMaxHeight();
+	
+	/** Gets the default secondary color height for this terrain 
+	 * 
+	 * @return the default secondary color height for this terrain
+	 */
+	protected abstract double getDefaultSecondaryHeight();
+	
+	/** Gets the default water height for this terrain 
+	 * 
+	 * @return the default water height for this terrain
+	 */
+	protected abstract double getDefaultWaterHeight();
 	
 	/**
 	 * @return the height array
@@ -371,17 +527,5 @@ public abstract class Terrain
 	public void setView(View view)
 	{
 		this.view = view;
-	}
-	
-	protected static Color changeColor(Color color)
-	{
-		if(color.equals(SECONDARY_COLOR))
-		{
-			return COLOR;
-		}
-		else
-		{
-			return SECONDARY_COLOR;
-		}
 	}
 }

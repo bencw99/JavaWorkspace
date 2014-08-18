@@ -141,7 +141,7 @@ public class PolygonProjection
 	{
 		Color currentColor = graphics.getColor();
 		
-		Color inclinedColor = darken(color, 30*incline);
+		Color inclinedColor = darken(color, Math.min(30*incline, 50));
 		
 		graphics.setColor(inclinedColor);
 		

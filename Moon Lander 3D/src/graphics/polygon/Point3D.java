@@ -19,9 +19,7 @@ public class Point3D
 	 */
 	public Point3D()
 	{
-		x = 0;
-		y = 0;
-		z = 0;
+		this(0, 0, 0);
 	}
 	
 	/** Parameterized constructor, initializes point coordinates to given parameters
@@ -135,6 +133,4 @@ public class Point3D
 	{
 		this.z = z;
 	}
-	
-	
 }

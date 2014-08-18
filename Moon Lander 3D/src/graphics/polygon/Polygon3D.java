@@ -19,16 +19,17 @@ public class Polygon3D
 	 * 
 	 * @param points	the Point3D array this instance will be initialized to
 	 */
-	public Polygon3D(Point3D[] points)
+	public Polygon3D(Point3D ... points)
 	{
-		this(points, Color.LIGHT_GRAY);
+		this(Color.LIGHT_GRAY, points);
 	}
 	
 	/** Parameterized constructor, initializes point array of instance to given array of points and color to given color
 	 * 
 	 * @param points	the Point3D array this instance will be initialized to
+	 * @param color		the color of this Polygon3D
 	 */
-	public Polygon3D(Point3D[] points, Color color)
+	public Polygon3D(Color color, Point3D ... points)
 	{
 		this.points = points;
 		this.color = color;

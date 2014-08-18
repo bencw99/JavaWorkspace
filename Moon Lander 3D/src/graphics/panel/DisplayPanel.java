@@ -25,20 +25,25 @@ public class DisplayPanel extends JPanel implements KeyListener, MouseMotionList
 	
 	public static void main(String[]args)
 	{
-//        view = new View(new Point3D(0, 20000, 0), new Point3D(0, 0, 0), 0, WIDTH, HEIGHT);
-        view = new View(new Point3D(5000, 5000, 7500), new Point3D(5000, 5000, 100), 0, WIDTH, HEIGHT);
+        view = new View(new Point3D(0, 25000, 0), new Point3D(0, 0, 0), 0, WIDTH, HEIGHT);
+        view = new View(new Point3D(600, 600, 1500), new Point3D(600, 600, 100), 0, WIDTH, HEIGHT);
         
-        terrain = new RectangularTerrain(100, 100, new Point2D(0, 0));
+        terrain = new RectangularTerrain(60, 60, new Point3D(0, 0, 0), 20);
         terrain.create();
         
-        planet = new SphericalTerrain(200, 200, 3000);
+        planet = new SphericalTerrain(150, 300, 5000);
 		planet.generate();
+		planet.ice();
 		for(int i = 0; i < 150; i ++)
 		{
 			planet.smooth();
 		}
-		planet.water(1900);
-		for(int i = 0; i < 20; i ++)
+		for(int i = 0; i < 200; i ++)
+		{
+			planet.typeSmooth();
+		}
+		planet.water();
+		for(int i = 0; i < 10; i ++)
 		{
 			planet.colorSmooth();
 		}
@@ -66,6 +71,9 @@ public class DisplayPanel extends JPanel implements KeyListener, MouseMotionList
 			{
 				e.printStackTrace();
 			}
+        	
+//        	planet.water(20*i + 3000);
+//        	planet.loadPolys();
         	
     		if(navigator[0])
     		{
