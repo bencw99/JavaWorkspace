@@ -14,31 +14,35 @@ public class Fighter extends Active
 	private static final Polygon3D[] defaultPolys = 
 	{
 		/** Back hexagonal base */
-		new Polygon3D(new Point3D(0, 10, -5), new Point3D(0, 0, -11), new Point3D(0, -5, -8), new Point3D(0, -5, 8), new Point3D(0, 0, 11), new Point3D(0, 10, 5)),
+		new Polygon3D(new Point3D(0, -50, 100), new Point3D(0, -110, 0), new Point3D(0, -80, -50), new Point3D(0, 80, -50), new Point3D(0, 110, 0), new Point3D(0, 50, 100)),
 		
 		/** Front hexagonal base */
-		new Polygon3D(new Point3D(20, 10, -5), new Point3D(20, 0, -11), new Point3D(20, -5, -8), new Point3D(20, -5, 8), new Point3D(20, 0, 11), new Point3D(20, 10, 5)),
+		new Polygon3D(new Point3D(200, -50, 100), new Point3D(200, -110, 0), new Point3D(200, -80, -50), new Point3D(200, 80, -50), new Point3D(200, 110, 0), new Point3D(200, 50, 100)),
 		
 		/** Hexagonal prism rectangles */
-		new Polygon3D(new Point3D(0, 10, -5), new Point3D(20, 10, -5), new Point3D(20, 0, -11), new Point3D(0, 0, -11)),
-		new Polygon3D(new Point3D(20, 0, -11), new Point3D(0, 0, -11), new Point3D(0, -5, -8), new Point3D(20, -5, -8)),
-		new Polygon3D(new Point3D(0, -5, -8), new Point3D(20, -5, -8), new Point3D(20, -5, 8), new Point3D(0, -5, 8)),
-		new Polygon3D(new Point3D(20, -5, 8), new Point3D(0, -5, 8), new Point3D(0, 0, 11), new Point3D(20, 0, 11)),
-		new Polygon3D(new Point3D(0, 0, 11), new Point3D(20, 0, 11), new Point3D(20, 10, 5), new Point3D(0, 10, 5)),
-		new Polygon3D(new Point3D(20, 10, 5), new Point3D(0, 10, 5), new Point3D(0, 10, -5), new Point3D(20, 10, -5)),
+		new Polygon3D(new Point3D(0, -50, 100), new Point3D(200, -50, 100), new Point3D(200, -110, 0), new Point3D(0, -110, 0)),
+		new Polygon3D(new Point3D(200, -110, 0), new Point3D(0, -110, 0), new Point3D(0, -80, -50), new Point3D(200, -80, -50)),
+		new Polygon3D(new Point3D(0, -80, -50), new Point3D(200, -80, -50), new Point3D(200, 80, -50), new Point3D(0, 80, -50)),
+		new Polygon3D(new Point3D(200, 80, -50), new Point3D(0, 80, -50), new Point3D(0, 110, 0), new Point3D(200, 110, 0)),
+		new Polygon3D(new Point3D(0, 110, 0), new Point3D(200, 110, 0), new Point3D(200, 50, 100), new Point3D(0, 50, 100)),
+		new Polygon3D(new Point3D(200, 50, 100), new Point3D(0, 50, 100), new Point3D(0, -50, 100), new Point3D(200, -50, 100)),
 		
 		/** Cockpit */
-		new Polygon3D(new Point3D(20, 10, -5), new Point3D(20, 10, 5), new Point3D(20, 5, 8), new Point3D(20, 5, -8)),
-		new Polygon3D(new Point3D(20, 10, -5), new Point3D(20, 10, 5), new Point3D(35, 5, 5), new Point3D(35, 5, -5)),
-		new Polygon3D(new Point3D(20, 10, 5), new Point3D(20, 5, 8), new Point3D(35, 5, 5)),
-		new Polygon3D(new Point3D(20, 10, -5), new Point3D(20, 5, -8), new Point3D(35, 5, -5)),
+		new Polygon3D(new Point3D(200, -50, 100), new Point3D(200, 50, 100), new Point3D(200, 80, 50), new Point3D(200, -80, 50)),
+		new Polygon3D(new Point3D(200, -50, 100), new Point3D(200, 50, 100), new Point3D(350, 50, 50), new Point3D(350, -50, 50)),
+		new Polygon3D(new Point3D(200, 50, 100), new Point3D(200, 80, 50), new Point3D(350, 50, 50)),
+		new Polygon3D(new Point3D(200, -50, 100), new Point3D(200, -80, 50), new Point3D(350, -50, 50)),
 		
 		/** Nose */
-		new Polygon3D(new Point3D(35, 5, 5), new Point3D(35, 5, -5), new Point3D(80, 3, -4), new Point3D(80, 3, 4))
+		new Polygon3D(new Point3D(350, 50, 50), new Point3D(350, -50, 50), new Point3D(800, -40, 30), new Point3D(800, 40, 30)),
 		
 		/** Nose end */
 		
 		/** Wings */
+		new Polygon3D(new Point3D(0, 110, 0), new Point3D(200, 110, 0),  new Point3D(230, 500, 70), new Point3D(120, 500, 70)),
+		new Polygon3D(new Point3D(0, 110, 0), new Point3D(200, 110, 0),  new Point3D(230, 500, -70), new Point3D(120, 500, -70)),
+		new Polygon3D(new Point3D(0, -110, 0), new Point3D(200, -110, 0),  new Point3D(230, -500, 70), new Point3D(120, -500, 70)),
+		new Polygon3D(new Point3D(0, -110, 0), new Point3D(200, -110, 0),  new Point3D(230, -500, -70), new Point3D(120, -500, -70)),
 		
 		/** Boosters */
 		

@@ -1,5 +1,6 @@
 package graphics.panel;
 
+import game.component.lander.Fighter;
 import game.terrain.*;
 import graphics.polygon.*;
 import graphics.projection.*;
@@ -20,6 +21,7 @@ public class DisplayPanel extends JPanel implements KeyListener, MouseMotionList
 	private static boolean[] navigator = new boolean[10];
 	private static RectangularTerrain terrain;
 	private static SphericalTerrain planet;
+	private static Fighter fighter;
 	private static View view;
     private static JFrame frame = new JFrame();
 	
@@ -27,6 +29,9 @@ public class DisplayPanel extends JPanel implements KeyListener, MouseMotionList
 	{
         view = new View(new Point3D(0, 25000, 0), new Point3D(0, 0, 0), 0, WIDTH, HEIGHT);
         view = new View(new Point3D(600, 600, 1500), new Point3D(600, 600, 100), 0, WIDTH, HEIGHT);
+        view = new View(new Point3D(0, 0, 100), new Point3D(0, 0, 0));
+        
+        fighter = new Fighter();
         
         terrain = new RectangularTerrain(60, 60, new Point3D(0, 0, 0), 20);
         terrain.create();
@@ -164,7 +169,7 @@ public class DisplayPanel extends JPanel implements KeyListener, MouseMotionList
 	
 	public void paintComponent(Graphics graphics)
 	{
-		terrain.draw(graphics);
+		fighter.draw(graphics);
 	}
 	
 	public static View getView()

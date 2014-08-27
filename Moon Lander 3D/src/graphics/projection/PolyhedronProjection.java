@@ -1,6 +1,7 @@
 package graphics.projection;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 /** A class representing a projection of a 3D polyhedron
  * @author Benjamin Cohen-Wang
@@ -53,6 +54,11 @@ public class PolyhedronProjection
 	 */
 	public void draw(Graphics graphics)
 	{
+		ArrayList<PolygonProjection> sortedPolygons = PolygonProjection.sort(projections);
 		
+		for(PolygonProjection projection : sortedPolygons)
+		{
+			projection.draw(graphics);
+		}
 	}
 }

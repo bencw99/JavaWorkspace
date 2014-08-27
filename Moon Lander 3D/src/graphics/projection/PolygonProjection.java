@@ -230,7 +230,7 @@ public class PolygonProjection
 		return new Color(red, green, blue);
 	}
 	
-	/**	Sorts the given array based on priority
+	/**	Sorts the given array list based on priority
 	 * 
 	 * @param polygons	the polygon projection array list to be sorted
 	 * @return a sorted ArrayList of PolygonProjecton objects from the given array
@@ -251,6 +251,34 @@ public class PolygonProjection
 				else if(j == 0)
 				{
 					sorted.add(0, polygons.get(i));
+					break;
+				}
+			}
+		}
+		return sorted;
+	}
+	
+	/**	Sorts the given array based on priority
+	 * 
+	 * @param polygons	the polygon projection array to be sorted
+	 * @return a sorted ArrayList of PolygonProjecton objects from the given array
+	 */
+	public static ArrayList<PolygonProjection> sort(PolygonProjection[] polygons)
+	{
+		ArrayList<PolygonProjection> sorted = new ArrayList<PolygonProjection>();
+		sorted.add(polygons[0]);
+		for(int i = 1; i < polygons.length; i ++)
+		{
+			for(int j = sorted.size() - 1; j >= 0; j --)
+			{
+				if(polygons[i].priority >= sorted.get(j).priority)
+				{
+					sorted.add(j + 1, polygons[i]);
+					break;
+				}
+				else if(j == 0)
+				{
+					sorted.add(0, polygons[i]);
 					break;
 				}
 			}
